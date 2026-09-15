@@ -43,4 +43,25 @@ class DatabaseHelper {
       'situacao': 0,
     });
   }
+
+  //UPDATE - Atualização da Situação da Tarefa
+  static Future<void> atualizarTarefa(int id, int situacao) async {
+    final db = await DatabaseHelper.database;
+    await db.update(
+      'tarefas',
+      {'situacao': situacao},
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  //Delete: Deletar uma tarefa do banco de dados
+  static Future<void> deletarTarefa(int id) async {
+    final db = await DatabaseHelper.database;
+    await db.delete(
+      'tarefas',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
 }

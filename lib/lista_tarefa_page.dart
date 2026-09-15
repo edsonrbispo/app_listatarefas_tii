@@ -24,6 +24,19 @@ class _ListaTarefaPageState extends State<ListaTarefaPage> {
     });
   }
 
+  Future<void> marcarSituacao(int index) async {
+    final tarefa = tarefas[index];
+    final novoValor = tarefa['situacao'] == 1 ? 0 : 1;
+    await DatabaseHelper.atualizarTarefa(tarefa['id'], novoValor);
+    carregarTarefas();
+  }
+
+  Future<void> deletarTarefa(int index) async {
+    final tarefa = tarefas[index];
+    await DatabaseHelper.deletarTarefa(tarefa['id']);
+    carregarTarefas();
+  }
+
   void adicionarTarefa() {
     final novaTarefaController = TextEditingController();
 
@@ -90,9 +103,12 @@ class _ListaTarefaPageState extends State<ListaTarefaPage> {
 
                 return Card(
                   child: ListTile(
-                    leading: Icon(
-                      situacao ? Icons.check_circle : Icons.circle_outlined,
-                      color: situacao ? Colors.green : Colors.grey,
+                    leading: GestureDetector(
+                      onTap: () => marcarSituacao(index),
+                      child: Icon(
+                        situacao ? Icons.check_circle : Icons.circle_outlined,
+                        color: situacao ? Colors.green : Colors.grey,
+                      ),
                     ),
                     title: Text(
                       tarefa['titulo'],
@@ -103,9 +119,12 @@ class _ListaTarefaPageState extends State<ListaTarefaPage> {
                       ),
                     ),
                     subtitle: Text(situacao ? 'Concluida' : 'Pendente'),
-                    trailing: Icon(
-                      Icons.delete_outline,
-                      color: Colors.grey,
+                    trailing: GestureDetector(
+                      onTap: () => deletarTarefa(index),
+                      child: Icon(
+                        Icons.delete_outline,
+                        color: Colors.grey,
+                      ),
                     ),
                   ),
                 );
