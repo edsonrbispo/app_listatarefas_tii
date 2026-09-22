@@ -12,6 +12,8 @@ class ListaTarefaPage extends StatefulWidget {
 class _ListaTarefaPageState extends State<ListaTarefaPage> {
   List<Map<String, dynamic>> tarefas = [];
 
+  String? filtroAtual;
+
   @override
   void initState() {
     super.initState();
@@ -19,10 +21,16 @@ class _ListaTarefaPageState extends State<ListaTarefaPage> {
   }
 
   void carregarTarefas() async {
-    final dados = await DatabaseHelper.buscarTarefas();
+    final dados = await DatabaseHelper.buscarTarefas(filtro: filtroAtual);
     setState(() {
       tarefas = dados;
     });
+  }
+
+  void aplicarFitro(String? novoFiltro) {
+    filtroAtual = novoFiltro;
+    Navigator.pop(context);
+    carregarTarefas();
   }
 
   Future<void> marcarSituacao(int index) async {
@@ -108,17 +116,20 @@ class _ListaTarefaPageState extends State<ListaTarefaPage> {
             ListTile(
               leading: Icon(Icons.list),
               title: Text("Todas as Tarefas"),
-              onTap: () {},
+              selected: filtroAtual == null,
+              onTap: () => aplicarFitro(null),
             ),
             ListTile(
               leading: Icon(Icons.check_circle),
               title: Text("Concluidas"),
-              onTap: () {},
+              selected: filtroAtual == 'concluidas',
+              onTap: () => aplicarFitro('concluidas'),
             ),
             ListTile(
               leading: Icon(Icons.circle_outlined),
               title: Text("Pendentes"),
-              onTap: () {},
+              selected: filtroAtual == 'pendentes',
+              onTap: () => aplicarFitro('pendentes'),
             ),
             ListTile(
               leading: Icon(Icons.info_outline),
